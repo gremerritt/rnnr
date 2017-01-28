@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "commander", "~> 4.4"
   spec.add_dependency "faraday", "~> 0.11"
   spec.add_dependency "launchy", "~> 2.4"
+  spec.add_dependency "mail"
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
