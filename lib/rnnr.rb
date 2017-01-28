@@ -20,10 +20,12 @@ module Rnnr
       c.description = 'Send email of year-to-date running total'
       c.option '--offset INTEGER', Integer, 'Offset for days in year'
       c.option '--email <true/false>', String, 'Send an email'
+      c.option '--disp <true/false>', String, 'Print results to screen'
       c.option '--config_dir directory', String, 'Directory where your .rnnr_config.yml file lives'
       c.action do |args, options|
         options.default :offset => 0,
                         :email => 'false',
+                        :disp => 'true',
                         :config_dir => "~/"
         Rnnr.send options
       end

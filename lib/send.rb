@@ -41,15 +41,12 @@ module Rnnr
         weekly_distance = weekly_distance.to_miles.round(2)
         milesperday     = (yearly_distance / (Date.today.yday - options.offset)).round(2)
 
-        rslt_str = "Yearly:    #{yearly_distance}"\
-                   "\nWeekly:    #{weekly_distance}"\
+        rslt_str = "Yearly: #{yearly_distance}"\
+                   "\nWeekly: #{weekly_distance}"\
                    "\nMiles/Day: #{milesperday}"\
 
-        if options.email == 'true'
-          send_email rslt_str
-        else
-          puts rslt_str
-        end
+        send_email rslt_str if options.email == 'true'
+        puts rslt_str if options.disp == 'true'
       else
         raise "Unable to retrieve workout data"
       end
