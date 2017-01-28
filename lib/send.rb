@@ -14,6 +14,7 @@ module Rnnr
       today = DateTime.now
       today_start = DateTime.new(today.year, today.month, today.day)
       last_sunday = today_start - today_start.wday
+      month_ref = today_start - today_start.mday + 1
 
       conn = Faraday.new(:url => 'https://api.ua.com')
       resp = conn.get do |req|
@@ -29,6 +30,7 @@ module Rnnr
         body = JSON.parse(resp.body)
         yearly_distance = 0.0
         weekly_distance = 0.0
+        monthly_distance = 0.0
         body['_embedded']['workouts'].each do |workout|
           yearly_distance += workout['aggregates']['distance_total']
 
@@ -36,14 +38,24 @@ module Rnnr
           if date > last_sunday
             weekly_distance += workout['aggregates']['distance_total']
           end
+
+          if date > month_ref
+            monthly_distance += workout['aggregates']['distance_total']
+          end
         end
         yearly_distance = yearly_distance.to_miles.round(2)
         weekly_distance = weekly_distance.to_miles.round(2)
-        milesperday     = (yearly_distance / (Date.today.yday - options.offset)).round(2)
+        monthly_distance = monthly_distance.to_miles.round(2)
+        yearly_milesperday = (yearly_distance / (Date.today.yday - options.offset)).round(2)
+        weekly_milesperday = (weekly_distance / (Date.today.wday - options.offset)).round(2)
+        monthly_milesperday = (monthly_distance / (Date.today.mday - options.offset)).round(2)
 
         rslt_str = "Yearly: #{yearly_distance}"\
+                   "\nMonthly: #{monthly_distance}"\
                    "\nWeekly: #{weekly_distance}"\
-                   "\nMiles/Day: #{milesperday}"\
+                   "\nYearly Avg Miles/Day: #{yearly_milesperday}"\
+                   "\nMonthly Avg Miles/Day: #{monthly_milesperday}"\
+                   "\nWeekly Avg Miles/Day: #{weekly_milesperday}"
 
         send_email rslt_str if options.email == 'true'
         puts rslt_str if options.disp == 'true'
